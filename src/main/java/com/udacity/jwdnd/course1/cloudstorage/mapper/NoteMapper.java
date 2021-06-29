@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.mapper;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import org.apache.ibatis.annotations.*;
@@ -22,4 +23,7 @@ public interface NoteMapper {
 
     @Delete("DELETE FROM NOTES  WHERE noteid = #{id}")
     int delete(Integer id);
+
+    @Select("SELECT * FROM NOTES WHERE notetitle = #{noteTitle} AND notedescription = #{noteDescription}")
+    List<Note> getNotesByTitleAndDescription(String noteTitle, String noteDescription);
 }

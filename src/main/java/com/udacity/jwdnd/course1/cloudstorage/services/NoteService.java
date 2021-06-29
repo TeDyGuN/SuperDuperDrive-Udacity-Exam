@@ -33,6 +33,10 @@ public class NoteService {
         return this.noteMapper.getNotesByUserId(id);
     }
 
+    public List<Note> getNotesByTitleAndDescription(String title, String description) {
+        return this.noteMapper.getNotesByTitleAndDescription(title, description);
+    }
+
     public void delete(Integer id) {
         this.noteMapper.delete(id);
     }

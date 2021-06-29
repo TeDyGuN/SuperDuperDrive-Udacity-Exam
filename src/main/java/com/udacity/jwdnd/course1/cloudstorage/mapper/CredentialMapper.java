@@ -22,4 +22,7 @@ public interface CredentialMapper {
     @Delete("DELETE FROM CREDENTIALS  WHERE credentialid = #{id}")
     int delete(Integer id);
 
+    @Select("SELECT * FROM CREDENTIALS WHERE username = #{username}")
+    List<Credential> getCredentialsByUsername(String username);
+
 }

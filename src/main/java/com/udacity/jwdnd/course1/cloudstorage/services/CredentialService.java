@@ -55,6 +55,10 @@ public class CredentialService {
         }).collect(Collectors.toList());
     }
 
+    public List<Credential> getCredentialsByUsername(String username) {
+        return this.credentialMapper.getCredentialsByUsername(username);
+    }
+
     public void delete(Integer id) {
         this.credentialMapper.delete(id);
     }

@@ -35,12 +35,17 @@ public class CredentialController {
     public String postCredential(Authentication authentication, Credential credential, Model model) {
         User user = this.userService.getUser(authentication.getName());
         String message = "Credential updated correctly!";
-        if (credential.getCredentialId() == null ) {
+        if ( credentialService.getCredentialsByUsername(credential.getUsername()).size() > 0 ) {
+            message = "User already available";
+            model.addAttribute("errorMessage", true);
+        } else if (credential.getCredentialId() == null ) {
+            model.addAttribute("successMessage", true);
             message = "Credential created correctly!";
             credential.setUserId(user.getUserId());
+        } else {
+            model.addAttribute("successMessage", true);
         }
         this.credentialService.createAndUpdateCredential(credential);
-        model.addAttribute("successMessage", true);
         model.addAttribute("messageText", message);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("files", this.fileService.getFilesByUserId(user.getUserId()));

@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -43,12 +44,16 @@ public class FileController {
         if( fileUpload.isEmpty()) {
             model.addAttribute("errorMessage", true);
             message = "There is an empty file!";
-        } else if ( fileService.createFile(fileUpload, user.getUserId()) ) {
-            model.addAttribute("successMessage", true);
-            message = "File uploaded correctly!";
-        } else {
+        } else if ( fileService.getFileByFilenameAndUsername(fileUpload.getOriginalFilename(), user.getUserId()).size() > 0 ) {
             model.addAttribute("errorMessage", true);
             message = "There is a file with the same name!";
+        } else if ( fileUpload.getSize() * 0.00000095367432 > 5 ) {
+            model.addAttribute("errorMessage", true);
+            message = "The maximum file size allowed is 5MB";
+        } else {
+            fileService.createFile(fileUpload, user.getUserId());
+            model.addAttribute("successMessage", true);
+            message = "File uploaded correctly!";
         }
         model.addAttribute("messageText", message);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));

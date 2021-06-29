@@ -37,12 +37,20 @@ public class NoteController {
     public String postNote(Authentication authentication, Note note, Model model) {
         User user = this.userService.getUser(authentication.getName());
         String message = "Note updated correctly!";
-        if (note.getNoteId() == null ) {
-            message = "Note created correctly!";
-            note.setUserId(user.getUserId());
+        if(note.getNoteDescription().length() > 1000) {
+            model.addAttribute("errorMessage", true);
+            message = "The description field has a maximum limit of 1000 characters.";
+        } else if( noteService.getNotesByTitleAndDescription(note.getNoteTitle(), note.getNoteDescription()).size() > 0 ) {
+            model.addAttribute("errorMessage", true);
+            message = "Duplicate note are not allowed";
+        } else{
+            if (note.getNoteId() == null ) {
+                message = "Note created correctly!";
+                note.setUserId(user.getUserId());
+            }
+            model.addAttribute("successMessage", true);
+            this.noteService.createAndUpdateNote(note);
         }
-        this.noteService.createAndUpdateNote(note);
-        model.addAttribute("successMessage", true);
         model.addAttribute("messageText", message);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("files", this.fileService.getFilesByUserId(user.getUserId()));
